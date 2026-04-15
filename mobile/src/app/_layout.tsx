@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuthStore } from '../stores/auth.store';
 
 export default function RootLayout() {
@@ -8,9 +9,7 @@ export default function RootLayout() {
   const segments = useSegments();
   const router = useRouter();
 
-  useEffect(() => {
-    loadUser();
-  }, []);
+  useEffect(() => { loadUser(); }, []);
 
   useEffect(() => {
     if (isLoading) return;
@@ -24,11 +23,17 @@ export default function RootLayout() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#4CAF50" />
-      </View>
+      <SafeAreaProvider>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#4CAF50" />
+        </View>
+      </SafeAreaProvider>
     );
   }
 
-  return <Slot />;
+  return (
+    <SafeAreaProvider>
+      <Slot />
+    </SafeAreaProvider>
+  );
 }
