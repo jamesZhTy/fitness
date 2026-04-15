@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { workoutService } from '../../services/workout.service';
 import { WorkoutPlan } from '../../types/workout';
@@ -14,6 +15,7 @@ export default function PlansScreen() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string | null>(null);
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!categoryId) return;
@@ -25,6 +27,11 @@ export default function PlansScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
+        <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>← 返回</Text>
+        </Pressable>
+      </View>
       <View style={styles.filterRow}>
         {['all', 'beginner', 'intermediate', 'advanced'].map((d) => (
           <Pressable key={d}
@@ -64,6 +71,9 @@ export default function PlansScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1A1A2E' },
+  topBar: { paddingHorizontal: 16, paddingBottom: 4, backgroundColor: '#1A1A2E' },
+  backButton: {},
+  backButtonText: { color: '#FF6B6B', fontSize: 16, fontWeight: '500' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A1A2E' },
   filterRow: { flexDirection: 'row', padding: 16, gap: 8 },
   filterChip: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: '#2D2D44' },

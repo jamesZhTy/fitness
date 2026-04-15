@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator, Image, Linking } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Exercise } from '../../../types/workout';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { workoutService } from '../../../services/workout.service';
@@ -69,8 +70,12 @@ export default function PlanDetailScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+    <ScrollView style={{ flex: 1 }}>
       <View style={styles.header}>
+        <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>← 返回</Text>
+        </Pressable>
         <Text style={styles.title}>{plan.title}</Text>
         {plan.description && <Text style={styles.desc}>{plan.description}</Text>}
         <View style={styles.metaRow}>
@@ -92,13 +97,16 @@ export default function PlanDetailScreen() {
       </Pressable>
       <View style={{ height: 40 }} />
     </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1A1A2E' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A1A2E' },
-  header: { backgroundColor: '#2D2D44', padding: 24, paddingTop: 16 },
+  header: { backgroundColor: '#2D2D44', padding: 24 },
+  backButton: { marginBottom: 12 },
+  backButtonText: { color: '#FF6B6B', fontSize: 16, fontWeight: '500' },
   title: { fontSize: 26, fontWeight: 'bold', color: '#FFFFFF' },
   desc: { fontSize: 14, color: '#A0A0B0', marginTop: 8 },
   metaRow: { flexDirection: 'row', marginTop: 16, gap: 24 },
