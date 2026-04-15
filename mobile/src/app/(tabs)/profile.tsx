@@ -1,7 +1,9 @@
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../stores/auth.store';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
@@ -33,6 +35,9 @@ export default function ProfileScreen() {
           <Text style={styles.statLabel}>Level</Text>
         </View>
       </View>
+      <TouchableOpacity style={styles.settingsButton} onPress={() => router.push('/profile/reminders')}>
+        <Text style={styles.settingsText}>⏰ Reminder Settings</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
@@ -51,6 +56,8 @@ const styles = StyleSheet.create({
   statItem: { alignItems: 'center' },
   statValue: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   statLabel: { fontSize: 12, color: '#999', marginTop: 4 },
-  logoutButton: { marginTop: 40, backgroundColor: '#ff5252', borderRadius: 12, paddingVertical: 12, paddingHorizontal: 40 },
+  settingsButton: { marginTop: 20, backgroundColor: '#fff', borderRadius: 12, paddingVertical: 14, paddingHorizontal: 24, elevation: 2 },
+  settingsText: { fontSize: 16, color: '#333', fontWeight: '500' },
+  logoutButton: { marginTop: 20, backgroundColor: '#ff5252', borderRadius: 12, paddingVertical: 12, paddingHorizontal: 40 },
   logoutText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 });
