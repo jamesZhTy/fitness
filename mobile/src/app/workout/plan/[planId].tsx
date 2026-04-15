@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator, Image, Linking } from 'react-native';
+import { Exercise } from '../../../types/workout';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { workoutService } from '../../../services/workout.service';
 import { WorkoutPlan } from '../../../types/workout';
@@ -15,6 +16,41 @@ function formatDuration(seconds: number): string {
     return sec > 0 ? `${min}m ${sec}s` : `${min} min`;
   }
   return `${seconds}s`;
+}
+
+function ExerciseItem({ exercise, index }: { exercise: Exercise; index: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const hasExtra = exercise.imageUrl || exercise.videoUrl;
+
+  return (
+    <Pressable
+      style={({pressed}) => [styles.exerciseItem, pressed && { opacity: 0.7 }]}
+      onPress={() => setExpanded(!expanded)}
+    >
+      <View style={styles.exerciseNumber}><Text style={styles.exerciseNumberText}>{index + 1}</Text></View>
+      <View style={styles.exerciseContent}>
+        <Text style={styles.exerciseName}>{exercise.name}</Text>
+        {exercise.description && <Text style={styles.exerciseDesc}>{exercise.description}</Text>}
+        <View style={styles.exerciseMeta}>
+          {exercise.duration && <Text style={styles.exerciseMetaText}>⏱ {formatDuration(exercise.duration)}</Text>}
+          {exercise.sets && exercise.reps && <Text style={styles.exerciseMetaText}>{exercise.sets} x {exercise.reps}</Text>}
+        </View>
+        {expanded && (
+          <View style={styles.expandedContent}>
+            {exercise.imageUrl && (
+              <Image source={{ uri: exercise.imageUrl }} style={styles.exerciseImage} resizeMode="cover" />
+            )}
+            {exercise.videoUrl && (
+              <Pressable onPress={() => Linking.openURL(exercise.videoUrl!)} style={styles.videoLink}>
+                <Text style={styles.videoLinkText}>▶ 观看教学视频</Text>
+              </Pressable>
+            )}
+            {!hasExtra && <Text style={styles.noExtraText}>暂无更多详情</Text>}
+          </View>
+        )}
+      </View>
+    </Pressable>
+  );
 }
 
 export default function PlanDetailScreen() {
@@ -47,17 +83,7 @@ export default function PlanDetailScreen() {
         <View key={phase.id} style={styles.phaseSection}>
           <Text style={styles.phaseTitle}>{phaseTypeLabels[phase.type] || phase.name} ({phase.duration} 分钟)</Text>
           {phase.exercises?.map((exercise, idx) => (
-            <View key={exercise.id} style={styles.exerciseItem}>
-              <View style={styles.exerciseNumber}><Text style={styles.exerciseNumberText}>{idx + 1}</Text></View>
-              <View style={styles.exerciseContent}>
-                <Text style={styles.exerciseName}>{exercise.name}</Text>
-                {exercise.description && <Text style={styles.exerciseDesc}>{exercise.description}</Text>}
-                <View style={styles.exerciseMeta}>
-                  {exercise.duration && <Text style={styles.exerciseMetaText}>⏱ {formatDuration(exercise.duration)}</Text>}
-                  {exercise.sets && exercise.reps && <Text style={styles.exerciseMetaText}>{exercise.sets} x {exercise.reps}</Text>}
-                </View>
-              </View>
-            </View>
+            <ExerciseItem key={exercise.id} exercise={exercise} index={idx} />
           ))}
         </View>
       ))}
@@ -89,6 +115,11 @@ const styles = StyleSheet.create({
   exerciseDesc: { fontSize: 13, color: '#A0A0B0', marginTop: 4 },
   exerciseMeta: { flexDirection: 'row', gap: 12, marginTop: 6 },
   exerciseMetaText: { fontSize: 13, color: '#FF8E53', fontWeight: '500' },
+  expandedContent: { marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#3D3D5C' },
+  exerciseImage: { width: '100%', height: 180, borderRadius: 8, marginBottom: 8 },
+  videoLink: { backgroundColor: '#FF6B6B22', borderRadius: 8, padding: 10, alignItems: 'center' },
+  videoLinkText: { color: '#FF6B6B', fontWeight: '600', fontSize: 14 },
+  noExtraText: { color: '#6B6B80', fontSize: 13, textAlign: 'center' },
   startButton: { backgroundColor: '#FF6B6B', marginHorizontal: 16, marginTop: 24, borderRadius: 12, padding: 16, alignItems: 'center' },
   startButtonText: { color: '#fff', fontSize: 18, fontWeight: '600' },
 });
