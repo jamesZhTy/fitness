@@ -4,6 +4,7 @@ import {
   RefreshControl, ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post } from '../../types/social';
 import { postService } from '../../services/post.service';
 
@@ -53,6 +54,7 @@ function PostCard({ post, onLike, onPress }: { post: Post; onLike: () => void; o
 }
 
 export default function CommunityScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +105,7 @@ export default function CommunityScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <Text style={styles.title}>Community</Text>
         <TouchableOpacity
           style={styles.createBtn}
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: 16, paddingTop: 60, backgroundColor: '#fff',
+    padding: 16, backgroundColor: '#fff',
     borderBottomWidth: 1, borderBottomColor: '#eee',
   },
   title: { fontSize: 24, fontWeight: 'bold' },

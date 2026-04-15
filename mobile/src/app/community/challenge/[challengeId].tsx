@@ -3,11 +3,13 @@ import {
   View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Challenge, ChallengeParticipant } from '../../../types/team';
 import { challengeService } from '../../../services/challenge.service';
 import { useAuthStore } from '../../../stores/auth.store';
 
 export default function ChallengeDetailScreen() {
+  const insets = useSafeAreaInsets();
   const { challengeId } = useLocalSearchParams<{ challengeId: string }>();
   const router = useRouter();
   const currentUser = useAuthStore((s) => s.user);
@@ -51,7 +53,7 @@ export default function ChallengeDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
@@ -100,7 +102,7 @@ export default function ChallengeDetailScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { padding: 16, paddingTop: 60, backgroundColor: '#fff' },
+  header: { padding: 16, backgroundColor: '#fff' },
   backText: { fontSize: 16, color: '#4CAF50' },
   info: { backgroundColor: '#fff', padding: 20, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#eee' },
   challengeTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },

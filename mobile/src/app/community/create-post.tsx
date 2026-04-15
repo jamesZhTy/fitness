@@ -4,9 +4,11 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { postService } from '../../services/post.service';
 
 export default function CreatePostScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const [content, setContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -32,7 +34,7 @@ export default function CreatePostScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: 16, paddingTop: 60, borderBottomWidth: 1, borderBottomColor: '#eee',
+    padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee',
   },
   title: { fontSize: 18, fontWeight: '600' },
   cancelText: { fontSize: 16, color: '#999' },

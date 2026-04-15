@@ -3,11 +3,13 @@ import {
   View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post, FollowCounts } from '../../../types/social';
 import { postService } from '../../../services/post.service';
 import { useAuthStore } from '../../../stores/auth.store';
 
 export default function UserProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const router = useRouter();
   const currentUser = useAuthStore((s) => s.user);
@@ -62,7 +64,7 @@ export default function UserProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
@@ -131,7 +133,7 @@ export default function UserProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { padding: 16, paddingTop: 60, backgroundColor: '#fff' },
+  header: { padding: 16, backgroundColor: '#fff' },
   backText: { fontSize: 16, color: '#4CAF50' },
   profileSection: {
     backgroundColor: '#fff', alignItems: 'center', paddingVertical: 24,

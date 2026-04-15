@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Challenge } from '../../types/team';
 import { challengeService } from '../../services/challenge.service';
 
@@ -19,6 +20,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function ChallengesScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ export default function ChallengesScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: 16, paddingTop: 60, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#eee',
+    padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#eee',
   },
   backText: { fontSize: 16, color: '#4CAF50' },
   title: { fontSize: 20, fontWeight: 'bold' },

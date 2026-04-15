@@ -4,10 +4,12 @@ import {
   KeyboardAvoidingView, Platform, ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Post, Comment } from '../../../types/social';
 import { postService } from '../../../services/post.service';
 
 export default function PostDetailScreen() {
+  const insets = useSafeAreaInsets();
   const { postId } = useLocalSearchParams<{ postId: string }>();
   const router = useRouter();
   const [post, setPost] = useState<Post | null>(null);
@@ -79,7 +81,7 @@ export default function PostDetailScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: 16, paddingTop: 60, backgroundColor: '#fff',
+    padding: 16, backgroundColor: '#fff',
     borderBottomWidth: 1, borderBottomColor: '#eee',
   },
   backText: { fontSize: 16, color: '#4CAF50' },
