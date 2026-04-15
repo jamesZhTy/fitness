@@ -12,10 +12,17 @@ export class ReminderService {
     private readonly reminderRepository: Repository<Reminder>,
   ) {}
 
-  create(userId: string, dto: CreateReminderDto): Promise<Reminder> {
+  private normalizeTime(time: string): string {
+    // Ensure time is in HH:MM:SS format
+    const parts = time.split(':');
+    if (parts.length === 2) return `${time}:00`;
+    return time;
+  }
+
+  async create(userId: string, dto: CreateReminderDto): Promise<Reminder> {
     const reminder = this.reminderRepository.create({
       userId,
-      time: dto.time,
+      time: this.normalizeTime(dto.time),
       repeatDays: dto.repeatDays,
       isEnabled: dto.isEnabled ?? true,
       message: dto.message ?? 'Time to work out!',
