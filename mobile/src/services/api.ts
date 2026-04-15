@@ -6,7 +6,7 @@ const API_BASE_URL = __DEV__
   ? Platform.OS === 'web'
     ? 'http://localhost:3000'
     : 'http://10.0.11.136:3000'
-  : 'https://fitlife-api.onrender.com';
+  : 'https://fitness-j6ka.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
