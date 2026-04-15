@@ -112,6 +112,14 @@ export default function CommunityScreen() {
           <Text style={styles.createBtnText}>+ Post</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.navRow}>
+        <TouchableOpacity style={styles.navBtn} onPress={() => router.push('/community/teams')}>
+          <Text style={styles.navBtnText}>Teams</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navBtn} onPress={() => router.push('/community/challenges')}>
+          <Text style={styles.navBtnText}>Challenges</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -173,4 +181,11 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyText: { fontSize: 18, fontWeight: '600', color: '#999' },
   emptySubtext: { fontSize: 14, color: '#bbb', marginTop: 8 },
+  navRow: {
+    flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#fff',
+  },
+  navBtn: {
+    flex: 1, backgroundColor: '#E8F5E9', paddingVertical: 12, borderRadius: 12, alignItems: 'center',
+  },
+  navBtnText: { color: '#4CAF50', fontWeight: '600', fontSize: 15 },
 });
