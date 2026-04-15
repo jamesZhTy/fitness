@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { checkinService } from '../../services/checkin.service';
 import { CheckIn, CheckInStats } from '../../types/checkin';
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS = ['日', '一', '二', '三', '四', '五', '六'];
+const MONTHS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
 export default function CheckInScreen() {
   const router = useRouter();
@@ -48,9 +48,9 @@ export default function CheckInScreen() {
       <ScrollView>
         {/* Month Header */}
         <View style={styles.monthHeader}>
-          <TouchableOpacity onPress={prevMonth}><Text style={styles.arrow}>‹</Text></TouchableOpacity>
+          <Pressable onPress={prevMonth} style={({pressed}) => pressed && {opacity: 0.7}}><Text style={styles.arrow}>‹</Text></Pressable>
           <Text style={styles.monthTitle}>{MONTHS[month - 1]} {year}</Text>
-          <TouchableOpacity onPress={nextMonth}><Text style={styles.arrow}>›</Text></TouchableOpacity>
+          <Pressable onPress={nextMonth} style={({pressed}) => pressed && {opacity: 0.7}}><Text style={styles.arrow}>›</Text></Pressable>
         </View>
 
         {/* Calendar */}
@@ -71,36 +71,36 @@ export default function CheckInScreen() {
         {/* Streak */}
         {stats && stats.streak > 0 && (
           <View style={styles.streakBanner}>
-            <Text style={styles.streakText}>🔥 {stats.streak} day streak!</Text>
+            <Text style={styles.streakText}>🔥 已连续打卡 {stats.streak} 天！</Text>
           </View>
         )}
 
         {/* Period Filter */}
         <View style={styles.periodRow}>
           {(['week', 'month', 'year'] as const).map((p) => (
-            <TouchableOpacity key={p} style={[styles.periodChip, period === p && styles.periodChipActive]}
+            <Pressable key={p} style={({pressed}) => [styles.periodChip, period === p && styles.periodChipActive, pressed && {opacity: 0.7}]}
               onPress={() => setPeriod(p)}>
               <Text style={[styles.periodText, period === p && styles.periodTextActive]}>
-                {p.charAt(0).toUpperCase() + p.slice(1)}
+                {p === 'week' ? '周' : p === 'month' ? '月' : '年'}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
 
         {/* Stats */}
-        {loading ? <ActivityIndicator color="#4CAF50" style={{ marginTop: 20 }} /> : stats && (
+        {loading ? <ActivityIndicator color="#FF6B6B" style={{ marginTop: 20 }} /> : stats && (
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats.totalCheckIns}</Text>
-              <Text style={styles.statLabel}>Check-ins</Text>
+              <Text style={styles.statLabel}>打卡次数</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats.totalDuration}</Text>
-              <Text style={styles.statLabel}>Minutes</Text>
+              <Text style={styles.statLabel}>分钟</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{stats.totalCalories}</Text>
-              <Text style={styles.statLabel}>Calories</Text>
+              <Text style={styles.statLabel}>卡路里</Text>
             </View>
           </View>
         )}
@@ -108,35 +108,35 @@ export default function CheckInScreen() {
       </ScrollView>
 
       {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => router.push('/checkin/create')}>
+      <Pressable style={({pressed}) => [styles.fab, pressed && {opacity: 0.7}]} onPress={() => router.push('/checkin/create')}>
         <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  container: { flex: 1, backgroundColor: '#1A1A2E' },
   monthHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
-  arrow: { fontSize: 28, color: '#4CAF50', paddingHorizontal: 16 },
-  monthTitle: { fontSize: 18, fontWeight: '600', color: '#333' },
+  arrow: { fontSize: 28, color: '#FF6B6B', paddingHorizontal: 16 },
+  monthTitle: { fontSize: 18, fontWeight: '600', color: '#FFFFFF' },
   calendar: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8 },
-  dayHeader: { width: '14.28%', textAlign: 'center', fontSize: 12, color: '#999', marginBottom: 8, fontWeight: '600' },
+  dayHeader: { width: '14.28%', textAlign: 'center', fontSize: 12, color: '#6B6B80', marginBottom: 8, fontWeight: '600' },
   dayCell: { width: '14.28%', alignItems: 'center', paddingVertical: 8 },
-  dayText: { fontSize: 14, color: '#333' },
-  checkedDayText: { color: '#4CAF50', fontWeight: 'bold' },
-  checkDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#4CAF50', marginTop: 2 },
-  streakBanner: { backgroundColor: '#FFF3E0', marginHorizontal: 16, borderRadius: 12, padding: 12, alignItems: 'center', marginTop: 8 },
-  streakText: { fontSize: 16, fontWeight: '600', color: '#FF9800' },
+  dayText: { fontSize: 14, color: '#A0A0B0' },
+  checkedDayText: { color: '#00E676', fontWeight: 'bold' },
+  checkDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#00E676', marginTop: 2 },
+  streakBanner: { backgroundColor: 'rgba(255,107,107,0.15)', marginHorizontal: 16, borderRadius: 12, padding: 12, alignItems: 'center', marginTop: 8 },
+  streakText: { fontSize: 16, fontWeight: '600', color: '#FF8E53' },
   periodRow: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginTop: 16 },
-  periodChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#e0e0e0' },
-  periodChipActive: { backgroundColor: '#4CAF50' },
-  periodText: { fontSize: 13, color: '#666' },
+  periodChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#2D2D44' },
+  periodChipActive: { backgroundColor: '#FF6B6B' },
+  periodText: { fontSize: 13, color: '#6B6B80' },
   periodTextActive: { color: '#fff' },
   statsGrid: { flexDirection: 'row', paddingHorizontal: 16, gap: 12, marginTop: 16 },
-  statCard: { flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 16, alignItems: 'center', elevation: 2 },
-  statValue: { fontSize: 24, fontWeight: 'bold', color: '#4CAF50' },
-  statLabel: { fontSize: 12, color: '#999', marginTop: 4 },
-  fab: { position: 'absolute', right: 20, bottom: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: '#4CAF50', justifyContent: 'center', alignItems: 'center', elevation: 5 },
+  statCard: { flex: 1, backgroundColor: '#2D2D44', borderRadius: 12, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: '#3D3D5C', elevation: 2 },
+  statValue: { fontSize: 24, fontWeight: 'bold', color: '#FF6B6B' },
+  statLabel: { fontSize: 12, color: '#6B6B80', marginTop: 4 },
+  fab: { position: 'absolute', right: 20, bottom: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: '#FF6B6B', justifyContent: 'center', alignItems: 'center', elevation: 5 },
   fabText: { fontSize: 28, color: '#fff', lineHeight: 30 },
 });

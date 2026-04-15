@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../stores/auth.store';
 
@@ -7,9 +7,9 @@ export default function ProfileScreen() {
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Logout', style: 'destructive', onPress: logout },
+    Alert.alert('退出登录', '确定要退出吗？', [
+      { text: '取消', style: 'cancel' },
+      { text: '退出', style: 'destructive', onPress: logout },
     ]);
   };
 
@@ -24,40 +24,40 @@ export default function ProfileScreen() {
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <Text style={styles.statValue}>{user?.height || '--'}</Text>
-          <Text style={styles.statLabel}>Height (cm)</Text>
+          <Text style={styles.statLabel}>身高 (cm)</Text>
         </View>
         <View style={styles.statItem}>
           <Text style={styles.statValue}>{user?.weight || '--'}</Text>
-          <Text style={styles.statLabel}>Weight (kg)</Text>
+          <Text style={styles.statLabel}>体重 (kg)</Text>
         </View>
         <View style={styles.statItem}>
           <Text style={styles.statValue}>{user?.fitnessLevel || '--'}</Text>
-          <Text style={styles.statLabel}>Level</Text>
+          <Text style={styles.statLabel}>等级</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.settingsButton} onPress={() => router.push('/profile/reminders')}>
-        <Text style={styles.settingsText}>⏰ Reminder Settings</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
+      <Pressable style={({pressed}) => [styles.settingsButton, pressed && {opacity: 0.7}]} onPress={() => router.push('/profile/reminders')}>
+        <Text style={styles.settingsText}>⏰ 提醒设置</Text>
+      </Pressable>
+      <Pressable style={({pressed}) => [styles.logoutButton, pressed && {opacity: 0.7}]} onPress={handleLogout}>
+        <Text style={styles.logoutText}>退出登录</Text>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', paddingTop: 40, backgroundColor: '#f5f5f5' },
-  avatarContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#4CAF50', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
+  container: { flex: 1, alignItems: 'center', paddingTop: 40, backgroundColor: '#1A1A2E' },
+  avatarContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#FF6B6B', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
   avatarText: { fontSize: 32, color: '#fff', fontWeight: 'bold' },
-  username: { fontSize: 22, fontWeight: 'bold', color: '#333' },
-  email: { fontSize: 14, color: '#999', marginTop: 4 },
-  bio: { fontSize: 14, color: '#666', marginTop: 12, paddingHorizontal: 40, textAlign: 'center' },
+  username: { fontSize: 22, fontWeight: 'bold', color: '#FFFFFF' },
+  email: { fontSize: 14, color: '#6B6B80', marginTop: 4 },
+  bio: { fontSize: 14, color: '#A0A0B0', marginTop: 12, paddingHorizontal: 40, textAlign: 'center' },
   statsRow: { flexDirection: 'row', marginTop: 30, gap: 30 },
   statItem: { alignItems: 'center' },
-  statValue: { fontSize: 20, fontWeight: 'bold', color: '#333' },
-  statLabel: { fontSize: 12, color: '#999', marginTop: 4 },
-  settingsButton: { marginTop: 20, backgroundColor: '#fff', borderRadius: 12, paddingVertical: 14, paddingHorizontal: 24, elevation: 2 },
-  settingsText: { fontSize: 16, color: '#333', fontWeight: '500' },
-  logoutButton: { marginTop: 20, backgroundColor: '#ff5252', borderRadius: 12, paddingVertical: 12, paddingHorizontal: 40 },
+  statValue: { fontSize: 20, fontWeight: 'bold', color: '#FFFFFF' },
+  statLabel: { fontSize: 12, color: '#6B6B80', marginTop: 4 },
+  settingsButton: { marginTop: 20, backgroundColor: '#2D2D44', borderRadius: 12, paddingVertical: 14, paddingHorizontal: 24, borderWidth: 1, borderColor: '#3D3D5C', elevation: 2 },
+  settingsText: { fontSize: 16, color: '#FFFFFF', fontWeight: '500' },
+  logoutButton: { marginTop: 20, backgroundColor: '#FF5252', borderRadius: 12, paddingVertical: 12, paddingHorizontal: 40 },
   logoutText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 });

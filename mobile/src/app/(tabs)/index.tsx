@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../stores/auth.store';
 import { workoutService } from '../../services/workout.service';
@@ -18,19 +18,19 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.greeting}>
-        <Text style={styles.greetingText}>Hi, {user?.username || 'Fitness Lover'} 👋</Text>
-        <Text style={styles.greetingSubtext}>Ready to work out today?</Text>
+        <Text style={styles.greetingText}>你好, {user?.username || '健身达人'} 👋</Text>
+        <Text style={styles.greetingSubtext}>今天准备好训练了吗？</Text>
       </View>
-      <Text style={styles.sectionTitle}>Workout Categories</Text>
+      <Text style={styles.sectionTitle}>训练分类</Text>
       {loading ? (
-        <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color="#FF6B6B" style={{ marginTop: 20 }} />
       ) : (
         <View style={styles.grid}>
           {categories.map((cat) => (
-            <TouchableOpacity key={cat.id} style={styles.gridCard} onPress={() => router.push(`/workout/${cat.id}`)}>
+            <Pressable key={cat.id} style={({pressed}) => [styles.gridCard, pressed && {opacity: 0.7}]} onPress={() => router.push(`/workout/${cat.id}`)}>
               <Text style={styles.gridIcon}>{cat.icon || '🏋️'}</Text>
               <Text style={styles.gridLabel}>{cat.name}</Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
       )}
@@ -40,13 +40,13 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  greeting: { backgroundColor: '#4CAF50', padding: 24, paddingTop: 16, paddingBottom: 30 },
-  greetingText: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
-  greetingSubtext: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
-  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#333', marginTop: 20, marginLeft: 16, marginBottom: 12 },
+  container: { flex: 1, backgroundColor: '#1A1A2E' },
+  greeting: { backgroundColor: '#2D2D44', padding: 24, paddingTop: 16, paddingBottom: 30 },
+  greetingText: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' },
+  greetingSubtext: { fontSize: 14, color: '#A0A0B0', marginTop: 4 },
+  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#FFFFFF', marginTop: 20, marginLeft: 16, marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 12 },
-  gridCard: { width: '46%', margin: '2%', backgroundColor: '#fff', borderRadius: 12, padding: 20, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
+  gridCard: { width: '46%', margin: '2%', backgroundColor: '#2D2D44', borderRadius: 12, padding: 20, alignItems: 'center', borderWidth: 1, borderColor: '#3D3D5C', elevation: 2 },
   gridIcon: { fontSize: 40 },
-  gridLabel: { fontSize: 15, fontWeight: '500', color: '#333', marginTop: 8 },
+  gridLabel: { fontSize: 15, fontWeight: '500', color: '#FFFFFF', marginTop: 8 },
 });

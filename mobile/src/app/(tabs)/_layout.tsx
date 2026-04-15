@@ -6,12 +6,12 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#4CAF50',
-        tabBarInactiveTintColor: '#999',
+        tabBarActiveTintColor: '#FF6B6B',
+        tabBarInactiveTintColor: '#6B6B80',
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: '#1A1A2E',
           borderTopWidth: 1,
-          borderTopColor: '#eee',
+          borderTopColor: '#2D2D44',
           paddingBottom: 4,
           paddingTop: 4,
           height: 56,
@@ -25,35 +25,35 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: '首页',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>🏠</Text>,
         }}
       />
       <Tabs.Screen
         name="workout"
         options={{
-          title: 'Workout',
+          title: '训练',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>💪</Text>,
         }}
       />
       <Tabs.Screen
         name="checkin"
         options={{
-          title: 'Check-in',
+          title: '打卡',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>✅</Text>,
         }}
       />
       <Tabs.Screen
         name="community"
         options={{
-          title: 'Community',
+          title: '社区',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>👥</Text>,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: '我的',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 22 }}>👤</Text>,
         }}
       />

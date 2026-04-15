@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, StyleSheet, TouchableOpacity, Alert,
+  View, Text, TextInput, StyleSheet, Pressable, Alert,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -15,7 +15,7 @@ export default function CreatePostScreen() {
 
   const handleSubmit = async () => {
     if (!content.trim()) {
-      Alert.alert('Hint', 'Please enter some content');
+      Alert.alert('提示', '请输入内容');
       return;
     }
     setSubmitting(true);
@@ -23,7 +23,7 @@ export default function CreatePostScreen() {
       await postService.createPost({ content: content.trim() });
       router.back();
     } catch (e) {
-      Alert.alert('Error', 'Failed to create post');
+      Alert.alert('错误', '发帖失败');
     } finally {
       setSubmitting(false);
     }
@@ -35,19 +35,20 @@ export default function CreatePostScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.cancelText}>Cancel</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>New Post</Text>
-        <TouchableOpacity onPress={handleSubmit} disabled={submitting}>
+        <Pressable onPress={() => router.back()} style={({pressed}) => pressed && {opacity: 0.7}}>
+          <Text style={styles.cancelText}>取消</Text>
+        </Pressable>
+        <Text style={styles.title}>发布动态</Text>
+        <Pressable onPress={handleSubmit} disabled={submitting} style={({pressed}) => pressed && {opacity: 0.7}}>
           <Text style={[styles.postText, submitting && { opacity: 0.5 }]}>
-            {submitting ? 'Posting...' : 'Post'}
+            {submitting ? '发布中...' : '发布'}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <TextInput
         style={styles.input}
-        placeholder="Share your fitness journey..."
+        placeholder="分享你的健身日常..."
+        placeholderTextColor="#6B6B80"
         multiline
         autoFocus
         value={content}
@@ -60,16 +61,16 @@ export default function CreatePostScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#1A1A2E' },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee',
+    padding: 16, borderBottomWidth: 1, borderBottomColor: '#3D3D5C',
   },
-  title: { fontSize: 18, fontWeight: '600' },
-  cancelText: { fontSize: 16, color: '#999' },
-  postText: { fontSize: 16, color: '#4CAF50', fontWeight: '600' },
+  title: { fontSize: 18, fontWeight: '600', color: '#FFFFFF' },
+  cancelText: { fontSize: 16, color: '#6B6B80' },
+  postText: { fontSize: 16, color: '#FF6B6B', fontWeight: '600' },
   input: {
-    flex: 1, padding: 16, fontSize: 16, lineHeight: 24, textAlignVertical: 'top',
+    flex: 1, padding: 16, fontSize: 16, lineHeight: 24, textAlignVertical: 'top', color: '#FFFFFF',
   },
-  charCount: { padding: 16, color: '#999', textAlign: 'right' },
+  charCount: { padding: 16, color: '#6B6B80', textAlign: 'right' },
 });

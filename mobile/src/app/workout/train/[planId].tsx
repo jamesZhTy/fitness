@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { workoutService } from '../../../services/workout.service';
 import { WorkoutPlan, Exercise } from '../../../types/workout';
@@ -67,28 +67,28 @@ export default function TrainingScreen() {
   const handleSkip = () => { if (timerRef.current) clearInterval(timerRef.current); handleNext(); };
   const handlePause = () => { setIsPaused(!isPaused); if (timerRef.current) clearInterval(timerRef.current); };
   const handleQuit = () => {
-    Alert.alert('Quit Training', 'Are you sure you want to quit?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Quit', style: 'destructive', onPress: () => { if (timerRef.current) clearInterval(timerRef.current); router.back(); } },
+    Alert.alert('退出训练', '确定要退出训练吗？', [
+      { text: '取消', style: 'cancel' },
+      { text: '退出', style: 'destructive', onPress: () => { if (timerRef.current) clearInterval(timerRef.current); router.back(); } },
     ]);
   };
 
   if (!plan || exercises.length === 0) {
-    return <View style={styles.center}><Text style={styles.loadingText}>Loading...</Text></View>;
+    return <View style={styles.center}><Text style={styles.loadingText}>加载中...</Text></View>;
   }
 
   if (isFinished) {
     return (
       <View style={styles.finishContainer}>
         <Text style={styles.finishIcon}>🎉</Text>
-        <Text style={styles.finishTitle}>Great Job!</Text>
-        <Text style={styles.finishSubtitle}>{plan.title} completed</Text>
+        <Text style={styles.finishTitle}>太棒了！</Text>
+        <Text style={styles.finishSubtitle}>{plan.title} 已完成</Text>
         <View style={styles.finishStats}>
-          <View style={styles.finishStatItem}><Text style={styles.finishStatValue}>{formatTime(totalElapsed)}</Text><Text style={styles.finishStatLabel}>Duration</Text></View>
-          <View style={styles.finishStatItem}><Text style={styles.finishStatValue}>{plan.caloriesBurned}</Text><Text style={styles.finishStatLabel}>kcal</Text></View>
-          <View style={styles.finishStatItem}><Text style={styles.finishStatValue}>{exercises.length}</Text><Text style={styles.finishStatLabel}>Exercises</Text></View>
+          <View style={styles.finishStatItem}><Text style={styles.finishStatValue}>{formatTime(totalElapsed)}</Text><Text style={styles.finishStatLabel}>时长</Text></View>
+          <View style={styles.finishStatItem}><Text style={styles.finishStatValue}>{plan.caloriesBurned}</Text><Text style={styles.finishStatLabel}>千卡</Text></View>
+          <View style={styles.finishStatItem}><Text style={styles.finishStatValue}>{exercises.length}</Text><Text style={styles.finishStatLabel}>动作数</Text></View>
         </View>
-        <TouchableOpacity style={styles.doneButton} onPress={() => router.back()}><Text style={styles.doneButtonText}>Done</Text></TouchableOpacity>
+        <Pressable style={({pressed}) => [styles.doneButton, pressed && {opacity: 0.7}]} onPress={() => router.back()}><Text style={styles.doneButtonText}>完成</Text></Pressable>
       </View>
     );
   }
@@ -111,45 +111,45 @@ export default function TrainingScreen() {
         ) : null}
       </View>
       <View style={styles.controls}>
-        <TouchableOpacity style={styles.controlBtn} onPress={handleQuit}><Text style={styles.controlBtnText}>✕ Quit</Text></TouchableOpacity>
+        <Pressable style={({pressed}) => [styles.controlBtn, pressed && {opacity: 0.7}]} onPress={handleQuit}><Text style={styles.controlBtnText}>✕ 退出</Text></Pressable>
         {current.exercise.duration ? (
-          <TouchableOpacity style={[styles.controlBtn, styles.pauseBtn]} onPress={handlePause}>
-            <Text style={styles.controlBtnText}>{isPaused ? '▶ Resume' : '⏸ Pause'}</Text>
-          </TouchableOpacity>
+          <Pressable style={({pressed}) => [styles.controlBtn, styles.pauseBtn, pressed && {opacity: 0.7}]} onPress={handlePause}>
+            <Text style={styles.controlBtnText}>{isPaused ? '▶ 继续' : '⏸ 暂停'}</Text>
+          </Pressable>
         ) : null}
-        <TouchableOpacity style={[styles.controlBtn, styles.nextBtn]} onPress={handleSkip}>
-          <Text style={[styles.controlBtnText, { color: '#fff' }]}>{currentIndex >= exercises.length - 1 ? '✓ Finish' : '→ Next'}</Text>
-        </TouchableOpacity>
+        <Pressable style={({pressed}) => [styles.controlBtn, styles.nextBtn, pressed && {opacity: 0.7}]} onPress={handleSkip}>
+          <Text style={[styles.controlBtnText, { color: '#fff' }]}>{currentIndex >= exercises.length - 1 ? '✓ 完成' : '→ 下一个'}</Text>
+        </Pressable>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e', paddingTop: 20 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1a1a2e' },
+  container: { flex: 1, backgroundColor: '#1A1A2E', paddingTop: 20 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A1A2E' },
   loadingText: { color: '#fff', fontSize: 18 },
-  progressBar: { height: 4, backgroundColor: '#333', marginHorizontal: 20 },
-  progressFill: { height: 4, backgroundColor: '#4CAF50' },
-  phaseLabel: { color: '#4CAF50', fontSize: 14, textAlign: 'center', marginTop: 16 },
-  counter: { color: '#666', fontSize: 13, textAlign: 'center', marginTop: 4 },
+  progressBar: { height: 4, backgroundColor: '#2D2D44', marginHorizontal: 20 },
+  progressFill: { height: 4, backgroundColor: '#FF6B6B' },
+  phaseLabel: { color: '#FF8E53', fontSize: 14, textAlign: 'center', marginTop: 16 },
+  counter: { color: '#6B6B80', fontSize: 13, textAlign: 'center', marginTop: 4 },
   exerciseArea: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
   exerciseName: { color: '#fff', fontSize: 28, fontWeight: 'bold', textAlign: 'center' },
-  exerciseDesc: { color: '#aaa', fontSize: 16, textAlign: 'center', marginTop: 12 },
-  timer: { color: '#4CAF50', fontSize: 64, fontWeight: 'bold', marginTop: 40 },
+  exerciseDesc: { color: '#A0A0B0', fontSize: 16, textAlign: 'center', marginTop: 12 },
+  timer: { color: '#FF6B6B', fontSize: 64, fontWeight: 'bold', marginTop: 40 },
   controls: { flexDirection: 'row', justifyContent: 'space-around', padding: 20, paddingBottom: 40 },
-  controlBtn: { paddingVertical: 14, paddingHorizontal: 24, borderRadius: 12, backgroundColor: '#333' },
-  pauseBtn: { backgroundColor: '#555' },
-  nextBtn: { backgroundColor: '#4CAF50' },
-  controlBtnText: { fontSize: 16, fontWeight: '600', color: '#ccc' },
-  finishContainer: { flex: 1, backgroundColor: '#1a1a2e', justifyContent: 'center', alignItems: 'center', padding: 24 },
+  controlBtn: { paddingVertical: 14, paddingHorizontal: 24, borderRadius: 12, backgroundColor: '#2D2D44' },
+  pauseBtn: { backgroundColor: '#363654' },
+  nextBtn: { backgroundColor: '#FF6B6B' },
+  controlBtnText: { fontSize: 16, fontWeight: '600', color: '#A0A0B0' },
+  finishContainer: { flex: 1, backgroundColor: '#1A1A2E', justifyContent: 'center', alignItems: 'center', padding: 24 },
   finishIcon: { fontSize: 64 },
   finishTitle: { color: '#fff', fontSize: 32, fontWeight: 'bold', marginTop: 16 },
-  finishSubtitle: { color: '#aaa', fontSize: 16, marginTop: 8 },
+  finishSubtitle: { color: '#A0A0B0', fontSize: 16, marginTop: 8 },
   finishStats: { flexDirection: 'row', marginTop: 40, gap: 32 },
   finishStatItem: { alignItems: 'center' },
-  finishStatValue: { color: '#4CAF50', fontSize: 24, fontWeight: 'bold' },
-  finishStatLabel: { color: '#666', fontSize: 12, marginTop: 4 },
-  doneButton: { backgroundColor: '#4CAF50', borderRadius: 12, padding: 16, paddingHorizontal: 60, marginTop: 40 },
+  finishStatValue: { color: '#FF6B6B', fontSize: 24, fontWeight: 'bold' },
+  finishStatLabel: { color: '#6B6B80', fontSize: 12, marginTop: 4 },
+  doneButton: { backgroundColor: '#FF6B6B', borderRadius: 12, padding: 16, paddingHorizontal: 60, marginTop: 40 },
   doneButtonText: { color: '#fff', fontSize: 18, fontWeight: '600' },
 });

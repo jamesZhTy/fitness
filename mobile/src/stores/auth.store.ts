@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import * as SecureStore from 'expo-secure-store';
+import { getItem, setItem, deleteItem } from '../services/storage';
 import { User } from '../types/user';
 import { authService } from '../services/auth.service';
 import { userService } from '../services/user.service';
@@ -21,29 +21,29 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (email, password) => {
     const tokens = await authService.login(email, password);
-    await SecureStore.setItemAsync('accessToken', tokens.accessToken);
-    await SecureStore.setItemAsync('refreshToken', tokens.refreshToken);
+    await setItem('accessToken', tokens.accessToken);
+    await setItem('refreshToken', tokens.refreshToken);
     const user = await userService.getProfile();
     set({ user, isAuthenticated: true });
   },
 
   register: async (email, password, username) => {
     const tokens = await authService.register(email, password, username);
-    await SecureStore.setItemAsync('accessToken', tokens.accessToken);
-    await SecureStore.setItemAsync('refreshToken', tokens.refreshToken);
+    await setItem('accessToken', tokens.accessToken);
+    await setItem('refreshToken', tokens.refreshToken);
     const user = await userService.getProfile();
     set({ user, isAuthenticated: true });
   },
 
   logout: async () => {
-    await SecureStore.deleteItemAsync('accessToken');
-    await SecureStore.deleteItemAsync('refreshToken');
+    await deleteItem('accessToken');
+    await deleteItem('refreshToken');
     set({ user: null, isAuthenticated: false });
   },
 
   loadUser: async () => {
     try {
-      const token = await SecureStore.getItemAsync('accessToken');
+      const token = await getItem('accessToken');
       if (token) {
         const user = await userService.getProfile();
         set({ user, isAuthenticated: true, isLoading: false });

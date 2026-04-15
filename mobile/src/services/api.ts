@@ -1,8 +1,11 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
+import { getItem, setItem, deleteItem } from './storage';
 
 const API_BASE_URL = __DEV__
-  ? 'http://10.0.2.2:3000' // Android emulator
+  ? Platform.OS === 'web'
+    ? 'http://localhost:3000'
+    : 'http://10.0.11.136:3000'
   : 'http://localhost:3000';
 
 const api = axios.create({
@@ -11,7 +14,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const token = await SecureStore.getItemAsync('accessToken');
+  const token = await getItem('accessToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -25,19 +28,19 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = await SecureStore.getItemAsync('refreshToken');
+        const refreshToken = await getItem('refreshToken');
         if (refreshToken) {
           const res = await axios.post(`${API_BASE_URL}/auth/refresh`, null, {
             headers: { Authorization: `Bearer ${refreshToken}` },
           });
-          await SecureStore.setItemAsync('accessToken', res.data.accessToken);
-          await SecureStore.setItemAsync('refreshToken', res.data.refreshToken);
+          await setItem('accessToken', res.data.accessToken);
+          await setItem('refreshToken', res.data.refreshToken);
           originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
           return api(originalRequest);
         }
       } catch {
-        await SecureStore.deleteItemAsync('accessToken');
-        await SecureStore.deleteItemAsync('refreshToken');
+        await deleteItem('accessToken');
+        await deleteItem('refreshToken');
       }
     }
     return Promise.reject(error);

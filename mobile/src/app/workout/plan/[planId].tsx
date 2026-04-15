@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { workoutService } from '../../../services/workout.service';
 import { WorkoutPlan } from '../../../types/workout';
 
 const phaseTypeLabels: Record<string, string> = {
-  warmup: '🔥 Warm-up', main: '💪 Main Training', cooldown: '❄️ Cool-down',
+  warmup: '🔥 热身', main: '💪 正式训练', cooldown: '❄️ 放松拉伸',
 };
 
 function formatDuration(seconds: number): string {
@@ -29,7 +29,7 @@ export default function PlanDetailScreen() {
   }, [planId]);
 
   if (loading || !plan) {
-    return <View style={styles.center}><ActivityIndicator size="large" color="#4CAF50" /></View>;
+    return <View style={styles.center}><ActivityIndicator size="large" color="#FF6B6B" /></View>;
   }
 
   return (
@@ -38,14 +38,14 @@ export default function PlanDetailScreen() {
         <Text style={styles.title}>{plan.title}</Text>
         {plan.description && <Text style={styles.desc}>{plan.description}</Text>}
         <View style={styles.metaRow}>
-          <View style={styles.metaItem}><Text style={styles.metaValue}>{plan.duration}</Text><Text style={styles.metaLabel}>min</Text></View>
-          <View style={styles.metaItem}><Text style={styles.metaValue}>{plan.caloriesBurned}</Text><Text style={styles.metaLabel}>kcal</Text></View>
-          <View style={styles.metaItem}><Text style={styles.metaValue}>{plan.difficulty}</Text><Text style={styles.metaLabel}>level</Text></View>
+          <View style={styles.metaItem}><Text style={styles.metaValue}>{plan.duration}</Text><Text style={styles.metaLabel}>分钟</Text></View>
+          <View style={styles.metaItem}><Text style={styles.metaValue}>{plan.caloriesBurned}</Text><Text style={styles.metaLabel}>千卡</Text></View>
+          <View style={styles.metaItem}><Text style={styles.metaValue}>{plan.difficulty}</Text><Text style={styles.metaLabel}>难度</Text></View>
         </View>
       </View>
       {plan.phases?.map((phase) => (
         <View key={phase.id} style={styles.phaseSection}>
-          <Text style={styles.phaseTitle}>{phaseTypeLabels[phase.type] || phase.name} ({phase.duration} min)</Text>
+          <Text style={styles.phaseTitle}>{phaseTypeLabels[phase.type] || phase.name} ({phase.duration} 分钟)</Text>
           {phase.exercises?.map((exercise, idx) => (
             <View key={exercise.id} style={styles.exerciseItem}>
               <View style={styles.exerciseNumber}><Text style={styles.exerciseNumberText}>{idx + 1}</Text></View>
@@ -61,34 +61,34 @@ export default function PlanDetailScreen() {
           ))}
         </View>
       ))}
-      <TouchableOpacity style={styles.startButton} onPress={() => router.push(`/workout/train/${plan.id}`)}>
-        <Text style={styles.startButtonText}>Start Training</Text>
-      </TouchableOpacity>
+      <Pressable style={({pressed}) => [styles.startButton, pressed && {opacity: 0.7}]} onPress={() => router.push(`/workout/train/${plan.id}`)}>
+        <Text style={styles.startButtonText}>开始训练</Text>
+      </Pressable>
       <View style={{ height: 40 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { backgroundColor: '#4CAF50', padding: 24, paddingTop: 16 },
-  title: { fontSize: 26, fontWeight: 'bold', color: '#fff' },
-  desc: { fontSize: 14, color: 'rgba(255,255,255,0.85)', marginTop: 8 },
+  container: { flex: 1, backgroundColor: '#1A1A2E' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A1A2E' },
+  header: { backgroundColor: '#2D2D44', padding: 24, paddingTop: 16 },
+  title: { fontSize: 26, fontWeight: 'bold', color: '#FFFFFF' },
+  desc: { fontSize: 14, color: '#A0A0B0', marginTop: 8 },
   metaRow: { flexDirection: 'row', marginTop: 16, gap: 24 },
   metaItem: { alignItems: 'center' },
-  metaValue: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
-  metaLabel: { fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2 },
+  metaValue: { fontSize: 20, fontWeight: 'bold', color: '#FF6B6B' },
+  metaLabel: { fontSize: 12, color: '#6B6B80', marginTop: 2 },
   phaseSection: { marginTop: 16, paddingHorizontal: 16 },
-  phaseTitle: { fontSize: 16, fontWeight: '600', color: '#333', marginBottom: 12 },
-  exerciseItem: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 10, padding: 14, marginBottom: 8 },
-  exerciseNumber: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#4CAF50', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
+  phaseTitle: { fontSize: 16, fontWeight: '600', color: '#FFFFFF', marginBottom: 12 },
+  exerciseItem: { flexDirection: 'row', backgroundColor: '#2D2D44', borderRadius: 10, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: '#3D3D5C' },
+  exerciseNumber: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#FF6B6B', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
   exerciseNumberText: { color: '#fff', fontWeight: 'bold', fontSize: 13 },
   exerciseContent: { flex: 1 },
-  exerciseName: { fontSize: 16, fontWeight: '500', color: '#333' },
-  exerciseDesc: { fontSize: 13, color: '#666', marginTop: 4 },
+  exerciseName: { fontSize: 16, fontWeight: '500', color: '#FFFFFF' },
+  exerciseDesc: { fontSize: 13, color: '#A0A0B0', marginTop: 4 },
   exerciseMeta: { flexDirection: 'row', gap: 12, marginTop: 6 },
-  exerciseMetaText: { fontSize: 13, color: '#4CAF50', fontWeight: '500' },
-  startButton: { backgroundColor: '#4CAF50', marginHorizontal: 16, marginTop: 24, borderRadius: 12, padding: 16, alignItems: 'center' },
+  exerciseMetaText: { fontSize: 13, color: '#FF8E53', fontWeight: '500' },
+  startButton: { backgroundColor: '#FF6B6B', marginHorizontal: 16, marginTop: 24, borderRadius: 12, padding: 16, alignItems: 'center' },
   startButtonText: { color: '#fff', fontSize: 18, fontWeight: '600' },
 });

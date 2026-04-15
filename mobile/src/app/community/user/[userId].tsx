@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator,
+  View, Text, FlatList, StyleSheet, Pressable, ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -57,7 +57,7 @@ export default function UserProfileScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#4CAF50" />
+        <ActivityIndicator size="large" color="#FF6B6B" />
       </View>
     );
   }
@@ -65,9 +65,9 @@ export default function UserProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <Pressable onPress={() => router.back()} style={({pressed}) => pressed && {opacity: 0.7}}>
           <Text style={styles.backText}>← Back</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <View style={styles.profileSection}>
@@ -94,14 +94,14 @@ export default function UserProfileScreen() {
         </View>
 
         {!isMe && (
-          <TouchableOpacity
-            style={[styles.followBtn, isFollowing && styles.followingBtn]}
+          <Pressable
+            style={({pressed}) => [styles.followBtn, isFollowing && styles.followingBtn, pressed && {opacity: 0.7}]}
             onPress={handleFollow}
           >
             <Text style={[styles.followBtnText, isFollowing && styles.followingBtnText]}>
               {isFollowing ? 'Following' : 'Follow'}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
       </View>
 
@@ -109,8 +109,8 @@ export default function UserProfileScreen() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.postCard}
+          <Pressable
+            style={({pressed}) => [styles.postCard, pressed && {opacity: 0.7}]}
             onPress={() => router.push(`/community/post/${item.id}`)}
           >
             <Text style={styles.postContent} numberOfLines={3}>
@@ -120,7 +120,7 @@ export default function UserProfileScreen() {
               <Text style={styles.metaText}>❤️ {item.likesCount}</Text>
               <Text style={styles.metaText}>💬 {item.commentsCount}</Text>
             </View>
-          </TouchableOpacity>
+          </Pressable>
         )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No posts yet</Text>
@@ -131,35 +131,35 @@ export default function UserProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { padding: 16, backgroundColor: '#fff' },
-  backText: { fontSize: 16, color: '#4CAF50' },
+  container: { flex: 1, backgroundColor: '#1A1A2E' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A1A2E' },
+  header: { padding: 16, backgroundColor: '#2D2D44' },
+  backText: { fontSize: 16, color: '#FF6B6B' },
   profileSection: {
-    backgroundColor: '#fff', alignItems: 'center', paddingVertical: 24,
-    borderBottomWidth: 1, borderBottomColor: '#eee',
+    backgroundColor: '#2D2D44', alignItems: 'center', paddingVertical: 24,
+    borderBottomWidth: 1, borderBottomColor: '#3D3D5C',
   },
   avatar: {
-    width: 80, height: 80, borderRadius: 40, backgroundColor: '#4CAF50',
+    width: 80, height: 80, borderRadius: 40, backgroundColor: '#FF6B6B',
     justifyContent: 'center', alignItems: 'center', marginBottom: 12,
   },
   avatarText: { color: '#fff', fontSize: 32, fontWeight: 'bold' },
-  username: { fontSize: 20, fontWeight: '700', marginBottom: 16 },
+  username: { fontSize: 20, fontWeight: '700', marginBottom: 16, color: '#FFFFFF' },
   statsRow: { flexDirection: 'row', gap: 40, marginBottom: 16 },
   statItem: { alignItems: 'center' },
-  statNum: { fontSize: 18, fontWeight: '700' },
-  statLabel: { fontSize: 12, color: '#999' },
+  statNum: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
+  statLabel: { fontSize: 12, color: '#6B6B80' },
   followBtn: {
-    backgroundColor: '#4CAF50', paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20,
+    backgroundColor: '#FF6B6B', paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20,
   },
-  followingBtn: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#4CAF50' },
+  followingBtn: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#FF6B6B' },
   followBtnText: { color: '#fff', fontWeight: '600' },
-  followingBtnText: { color: '#4CAF50' },
+  followingBtnText: { color: '#FF6B6B' },
   postCard: {
-    backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12, borderRadius: 12, padding: 16,
+    backgroundColor: '#2D2D44', marginHorizontal: 16, marginTop: 12, borderRadius: 12, padding: 16, borderWidth: 1, borderColor: '#3D3D5C',
   },
-  postContent: { fontSize: 15, lineHeight: 22 },
+  postContent: { fontSize: 15, lineHeight: 22, color: '#A0A0B0' },
   postMeta: { flexDirection: 'row', gap: 16, marginTop: 12 },
-  metaText: { fontSize: 13, color: '#999' },
-  emptyText: { textAlign: 'center', color: '#999', padding: 32 },
+  metaText: { fontSize: 13, color: '#6B6B80' },
+  emptyText: { textAlign: 'center', color: '#6B6B80', padding: 32 },
 });

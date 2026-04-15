@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ActivityIndicator,
+  View, Text, FlatList, StyleSheet, Pressable, Alert, ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -42,21 +42,21 @@ export default function ChallengeDetailScreen() {
       const lb = await challengeService.getLeaderboard(challengeId!);
       setLeaderboard(lb);
     } catch (e: any) {
-      Alert.alert('Error', e.response?.data?.message || 'Failed to join');
+      Alert.alert('错误', e.response?.data?.message || '加入失败');
     }
   };
 
-  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#4CAF50" /></View>;
-  if (!challenge) return <View style={styles.center}><Text>Challenge not found</Text></View>;
+  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#FF6B6B" /></View>;
+  if (!challenge) return <View style={styles.center}><Text style={{ color: '#A0A0B0' }}>挑战不存在</Text></View>;
 
   const medals = ['🥇', '🥈', '🥉'];
 
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>← Back</Text>
-        </TouchableOpacity>
+        <Pressable onPress={() => router.back()} style={({pressed}) => pressed && {opacity: 0.7}}>
+          <Text style={styles.backText}>← 返回</Text>
+        </Pressable>
       </View>
       <View style={styles.info}>
         <Text style={styles.challengeTitle}>{challenge.title}</Text>
@@ -64,22 +64,22 @@ export default function ChallengeDetailScreen() {
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={styles.statNum}>{challenge.goal}</Text>
-            <Text style={styles.statLabel}>Goal</Text>
+            <Text style={styles.statLabel}>目标</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statNum}>{challenge.participantCount}</Text>
-            <Text style={styles.statLabel}>Joined</Text>
+            <Text style={styles.statLabel}>已参加</Text>
           </View>
         </View>
         <Text style={styles.dates}>{challenge.startDate} ~ {challenge.endDate}</Text>
         {!joined && challenge.status !== 'completed' && (
-          <TouchableOpacity style={styles.joinBtn} onPress={handleJoin}>
-            <Text style={styles.joinBtnText}>Join Challenge</Text>
-          </TouchableOpacity>
+          <Pressable style={({pressed}) => [styles.joinBtn, pressed && {opacity: 0.7}]} onPress={handleJoin}>
+            <Text style={styles.joinBtnText}>参加挑战</Text>
+          </Pressable>
         )}
-        {joined && <Text style={styles.joinedText}>Joined</Text>}
+        {joined && <Text style={styles.joinedText}>已参加</Text>}
       </View>
-      <Text style={styles.sectionTitle}>Leaderboard</Text>
+      <Text style={styles.sectionTitle}>排行榜</Text>
       <FlatList
         data={leaderboard}
         keyExtractor={(item) => item.id}
@@ -93,34 +93,34 @@ export default function ChallengeDetailScreen() {
             <Text style={styles.rankScore}>{item.progress}</Text>
           </View>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>No participants yet</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>暂无参与者</Text>}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { padding: 16, backgroundColor: '#fff' },
-  backText: { fontSize: 16, color: '#4CAF50' },
-  info: { backgroundColor: '#fff', padding: 20, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#eee' },
-  challengeTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
-  desc: { fontSize: 15, color: '#666', marginBottom: 12, textAlign: 'center' },
+  container: { flex: 1, backgroundColor: '#1A1A2E' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1A1A2E' },
+  header: { padding: 16, backgroundColor: '#2D2D44' },
+  backText: { fontSize: 16, color: '#FF6B6B' },
+  info: { backgroundColor: '#2D2D44', padding: 20, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#3D3D5C' },
+  challengeTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 8, color: '#FFFFFF' },
+  desc: { fontSize: 15, color: '#A0A0B0', marginBottom: 12, textAlign: 'center' },
   statsRow: { flexDirection: 'row', gap: 40, marginBottom: 12 },
   statItem: { alignItems: 'center' },
-  statNum: { fontSize: 22, fontWeight: '700' },
-  statLabel: { fontSize: 12, color: '#999' },
-  dates: { fontSize: 13, color: '#999', marginBottom: 16 },
-  joinBtn: { backgroundColor: '#4CAF50', paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20 },
+  statNum: { fontSize: 22, fontWeight: '700', color: '#FF6B6B' },
+  statLabel: { fontSize: 12, color: '#6B6B80' },
+  dates: { fontSize: 13, color: '#6B6B80', marginBottom: 16 },
+  joinBtn: { backgroundColor: '#FF6B6B', paddingHorizontal: 32, paddingVertical: 10, borderRadius: 20 },
   joinBtnText: { color: '#fff', fontWeight: '600', fontSize: 16 },
-  joinedText: { color: '#4CAF50', fontWeight: '600', fontSize: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: '600', padding: 16, paddingBottom: 8 },
-  rankItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  joinedText: { color: '#00E676', fontWeight: '600', fontSize: 16 },
+  sectionTitle: { fontSize: 18, fontWeight: '600', padding: 16, paddingBottom: 8, color: '#FFFFFF' },
+  rankItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2D2D44', padding: 16, borderBottomWidth: 1, borderBottomColor: '#3D3D5C' },
   rank: { fontSize: 20, width: 40, textAlign: 'center' },
-  rankAvatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#4CAF50', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
+  rankAvatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#FF6B6B', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
   rankAvatarText: { color: '#fff', fontWeight: 'bold' },
-  rankName: { fontSize: 16, flex: 1 },
-  rankScore: { fontSize: 18, fontWeight: '700', color: '#4CAF50' },
-  empty: { textAlign: 'center', color: '#999', padding: 32 },
+  rankName: { fontSize: 16, flex: 1, color: '#FFFFFF' },
+  rankScore: { fontSize: 18, fontWeight: '700', color: '#FF8E53' },
+  empty: { textAlign: 'center', color: '#6B6B80', padding: 32 },
 });
